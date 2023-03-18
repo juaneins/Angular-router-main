@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
+
+import { CustomPreloadService } from './services/custom-preload.service';
 
 import { NotFoundComponent } from './not-found/not-found.component';
 
@@ -8,6 +10,9 @@ const routes: Routes = [
     path: '',
     loadChildren: () =>
       import('./website/website.module').then((m) => m.WebsiteModule),
+    data: {
+      preload: true,
+    },
   },
 
   {
@@ -22,7 +27,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  // PreloadAllModules load all modules, recommended for small applications
+  // you should use custom preload strategy
+  imports: [
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: CustomPreloadService,
+    }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
